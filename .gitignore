@@ -1,0 +1,38 @@
+# ======================
+# Backend (Spring Boot)
+# ======================
+
+backend/taskmanager/target/
+backend/taskmanager/.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+*.log
+
+# ======================
+# Frontend (React/Vite)
+# ======================
+
+frontend/node_modules/
+frontend/dist/
+
+# ======================
+# IDE Files
+# ======================
+
+.vscode/
+.idea/
+*.iml
+
+# ======================
+# OS Files
+# ======================
+
+.DS_Store
+Thumbs.db
+
+# ======================
+# Environment Files
+# ======================
+
+.env
+.env.local
