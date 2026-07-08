@@ -23,5 +23,9 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     long countByProject_UserAndPriority(User user, TaskPriority priority);
 
+    long countByProject(Project project);
+
+    long countByProjectAndStatus(Project project, TaskStatus status);
+
     Optional<Task> findByIdAndProject_User(Long id, User user);
 }

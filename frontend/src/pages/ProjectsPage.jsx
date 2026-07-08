@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import DashboardLayout from "../components/DashboardLayout";
 import EditIcon from "@mui/icons-material/Edit";
@@ -34,6 +35,7 @@ function ProjectsPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProjects();
@@ -317,29 +319,21 @@ function ProjectsPage() {
           {filteredProjects.map((project) => (
             <Grid item xs={12} md={6} lg={4} key={project.id}>
               <Card
+                onClick={() => navigate(`/projects/${project.id}`)}
                 sx={{
                   position: "relative",
-
+                  cursor: "pointer",
                   height: 310,
-
                   display: "flex",
-
                   flexDirection: "column",
-
                   overflow: "hidden",
-
                   borderRadius: "18px",
-
                   background: "linear-gradient(145deg,#111827,#0f172a)",
-
                   border: "1px solid rgba(255,255,255,.08)",
-
                   transition: ".25s",
-
                   "&:hover": {
                     transform: "translateY(-8px)",
                     boxShadow: "0 20px 40px rgba(0,0,0,.35)",
-
                     borderColor: "#3b82f6",
                   },
                 }}
@@ -437,14 +431,20 @@ function ProjectsPage() {
                     <Box display="flex" justifyContent="flex-end" mt={2}>
                       <IconButton
                         color="primary"
-                        onClick={() => openEditDialog(project)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openEditDialog(project);
+                        }}
                       >
                         <EditIcon />
                       </IconButton>
 
                       <IconButton
                         color="error"
-                        onClick={() => openDeleteDialog(project)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openDeleteDialog(project);
+                        }}
                       >
                         <DeleteIcon />
                       </IconButton>

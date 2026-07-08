@@ -57,6 +57,18 @@ public class ProjectController {
                 .toList();
     }
 
+    @GetMapping("/{id}")
+    public ProjectResponse getProjectById(@PathVariable Long id, Authentication authentication) {
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        Project project = projectService.getProjectById(id, user);
+        return new ProjectResponse(
+                project.getId(),
+                project.getName(),
+                project.getDescription(),
+                project.getCreatedAt());
+    }
+
     @PutMapping("/{id}")
     public ProjectResponse updateProject(@PathVariable Long id, Authentication authentication,
             @Valid @RequestBody CreateProjectRequest request) {

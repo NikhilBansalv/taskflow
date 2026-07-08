@@ -23,6 +23,18 @@ public class ProjectService {
         return projectRepository.findByUser(user);
     }
 
+    public Project getProjectById(Long projectId, User user) {
+        Project project = projectRepository.findById(projectId).orElse(null);
+
+        if (project == null) {
+            throw new RuntimeException("Project not found");
+        }
+        if (project.getUser().getId() != user.getId()) {
+            throw new RuntimeException("You are not allowed to access this project");
+        }
+        return project;
+    }
+
     public Project updateProject(Long projectId, String name, String description, User user) {
         Project project = projectRepository.findById(projectId).orElse(null);
         if (project == null) {
