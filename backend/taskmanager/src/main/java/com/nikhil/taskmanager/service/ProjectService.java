@@ -49,6 +49,7 @@ public class ProjectService {
         if (project.getUser().getId() != user.getId()) {
             throw new RuntimeException("You are not allowed to delete this project");
         }
+
         projectRepository.delete(project);
     }
 }
