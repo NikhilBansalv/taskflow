@@ -7,6 +7,7 @@ import com.nikhil.taskmanager.model.User;
 import com.nikhil.taskmanager.repository.UserRepository;
 import com.nikhil.taskmanager.service.ProjectService;
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,11 +25,11 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ProjectResponse createProject(@RequestParam String email, @Valid @RequestBody CreateProjectRequest request) {
-        User user = userRepository.findByEmail(email).orElse(null);
-        if (user == null) {
-            throw new RuntimeException("User not found");
-        }
+    public ProjectResponse createProject(Authentication authentication,
+            @Valid @RequestBody CreateProjectRequest request) {
+
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
         Project project = new Project(request.getName(), request.getDescription(), user);
 
@@ -42,12 +43,11 @@ public class ProjectController {
     }
 
     @GetMapping
-    public List<ProjectResponse> getProjects(@RequestParam String email) {
-        User user = userRepository.findByEmail(email).orElse(null);
-        if (user == null) {
-            throw new RuntimeException("User not found");
-        }
+    public List<ProjectResponse> getProjects(Authentication authentication) {
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         List<Project> projects = projectService.getProjectsByUser(user);
+
         return projects.stream()
                 .map(project -> new ProjectResponse(
                         project.getId(),
@@ -58,14 +58,15 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    public ProjectResponse updateProject(@PathVariable Long id, @RequestParam String email,
+    public ProjectResponse updateProject(@PathVariable Long id, Authentication authentication,
             @Valid @RequestBody CreateProjectRequest request) {
-        User user = userRepository.findByEmail(email).orElse(null);
-        if (user == null) {
-            throw new RuntimeException("User not found");
-        }
+
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
         Project updatedProject = projectService.updateProject(id, request.getName(), request.getDescription(), user);
+
         return new ProjectResponse(
                 updatedProject.getId(),
                 updatedProject.getName(),
@@ -74,11 +75,9 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteProject(@PathVariable Long id, @RequestParam String email) {
-        User user = userRepository.findByEmail(email).orElse(null);
-        if (user == null) {
-            throw new RuntimeException("User not found");
-        }
+    public String deleteProject(@PathVariable Long id, Authentication authentication) {
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         projectService.deleteProject(id, user);
         return "Project deleted successfully";
     }

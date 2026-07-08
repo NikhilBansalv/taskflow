@@ -9,6 +9,9 @@ import com.nikhil.taskmanager.repository.ProjectRepository;
 import com.nikhil.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import com.nikhil.taskmanager.model.User;
+import com.nikhil.taskmanager.repository.UserRepository;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -17,19 +20,23 @@ import java.util.List;
 public class TaskController {
     private final TaskService taskService;
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
-    public TaskController(TaskService taskService, ProjectRepository projectRepository) {
+    public TaskController(TaskService taskService, ProjectRepository projectRepository, UserRepository userRepository) {
         this.taskService = taskService;
         this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
 
     @PostMapping
-    public TaskResponse createTask(@RequestParam Long projectId, @Valid @RequestBody CreateTaskRequest request) {
-        Project project = projectRepository.findById(projectId).orElse(null);
+    public TaskResponse createTask(Authentication authentication, @RequestParam Long projectId,
+            @Valid @RequestBody CreateTaskRequest request) {
+        String email = authentication.getName();
 
-        if (project == null) {
-            throw new RuntimeException("Project not found");
-        }
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
+        Project project = projectRepository.findByIdAndUser(projectId, user)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
 
         Task task = new Task(request.getTitle(), request.getDescription(), request.getPriority(), request.getDueDate(),
                 project);
@@ -41,11 +48,11 @@ public class TaskController {
     }
 
     @GetMapping("/project/{projectId}")
-    public List<TaskResponse> getTasksByProject(@PathVariable Long projectId) {
-        Project project = projectRepository.findById(projectId).orElse(null);
-        if (project == null) {
-            throw new RuntimeException("Project not found");
-        }
+    public List<TaskResponse> getTasksByProject(Authentication authentication, @PathVariable Long projectId) {
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        Project project = projectRepository.findByIdAndUser(projectId, user)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
 
         List<Task> tasks = taskService.getTasksByProject(project);
 

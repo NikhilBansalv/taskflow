@@ -5,6 +5,9 @@ import com.nikhil.taskmanager.enums.TaskPriority;
 import com.nikhil.taskmanager.enums.TaskStatus;
 import com.nikhil.taskmanager.repository.ProjectRepository;
 import com.nikhil.taskmanager.repository.TaskRepository;
+import com.nikhil.taskmanager.repository.UserRepository;
+import com.nikhil.taskmanager.model.User;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,25 +15,33 @@ public class DashboardService {
 
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
 
-    public DashboardService(ProjectRepository projectRepository,
-            TaskRepository taskRepository) {
+    public DashboardService(ProjectRepository projectRepository, TaskRepository taskRepository,
+            UserRepository userRepository) {
         this.projectRepository = projectRepository;
         this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
     }
 
-    public DashboardStatsResponse getStats() {
+    public DashboardStatsResponse getStats(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
-        long totalProjects = projectRepository.count();
+        long totalProjects = projectRepository.countByUser(user);
 
-        long totalTasks = taskRepository.count();
+        long totalTasks = taskRepository.countByProject_User(user);
 
-        long completedTasks = taskRepository.countByStatus(TaskStatus.DONE);
+        long completedTasks = taskRepository.countByProject_UserAndStatus(user, TaskStatus.DONE);
 
-        long pendingTasks = taskRepository.countByStatus(TaskStatus.TO_DO);
+        long pendingTasks = taskRepository.countByProject_UserAndStatus(user, TaskStatus.TO_DO);
 
-        long highPriorityTasks = taskRepository.countByPriority(TaskPriority.HIGH);
+        long highPriorityTasks = taskRepository.countByProject_UserAndPriority(user, TaskPriority.HIGH);
 
-        return new DashboardStatsResponse(totalProjects, totalTasks, completedTasks, pendingTasks, highPriorityTasks);
+        return new DashboardStatsResponse(
+                totalProjects,
+                totalTasks,
+                completedTasks,
+                pendingTasks,
+                highPriorityTasks);
     }
 }

@@ -2,9 +2,8 @@ package com.nikhil.taskmanager.controller;
 
 import com.nikhil.taskmanager.dto.DashboardStatsResponse;
 import com.nikhil.taskmanager.service.DashboardService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/dashboard")
@@ -17,7 +16,9 @@ public class DashboardController {
     }
 
     @GetMapping("/stats")
-    public DashboardStatsResponse getStats() {
-        return dashboardService.getStats();
+    public DashboardStatsResponse getStats(Authentication authentication) {
+
+        return dashboardService.getStats(authentication.getName());
+
     }
 }

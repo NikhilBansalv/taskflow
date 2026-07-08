@@ -2,6 +2,7 @@ package com.nikhil.taskmanager.service;
 
 import com.nikhil.taskmanager.model.Project;
 import com.nikhil.taskmanager.model.Task;
+import com.nikhil.taskmanager.model.User;
 import com.nikhil.taskmanager.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 import com.nikhil.taskmanager.enums.TaskPriority;
@@ -24,6 +25,11 @@ public class TaskService {
 
     public List<Task> getTasksByProject(Project project) {
         return taskRepository.findByProject(project);
+    }
+
+    public Task getTaskByIdAndUser(Long taskId, User user) {
+        return taskRepository.findByIdAndProject_User(taskId, user)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
     }
 
     public Task updateTask(Long taskId, String title, String description, TaskPriority priority, LocalDate dueDate) {
