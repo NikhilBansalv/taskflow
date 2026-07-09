@@ -9,7 +9,14 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 
-import { Box, Grid, Typography, Paper, LinearProgress } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Typography,
+  Paper,
+  LinearProgress,
+  Chip,
+} from "@mui/material";
 
 const statCards = [
   {
@@ -67,55 +74,6 @@ const styles = {
     borderTop: "2px solid #3b82f6",
     borderRadius: "50%",
     animation: "spin 0.8s linear infinite",
-  },
-  heroBanner: {
-    background: "rgba(255,255,255,0.04)",
-    border: "0.5px solid rgba(255,255,255,0.09)",
-    borderRadius: 16,
-    padding: "28px 32px",
-    marginBottom: 28,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 16,
-    position: "relative",
-    overflow: "hidden",
-  },
-  heroBlueLine: {
-    position: "absolute",
-    left: 0,
-    top: 0,
-    bottom: 0,
-    width: 4,
-    background: "linear-gradient(180deg, #3b82f6, #8b5cf6)",
-    borderRadius: "16px 0 0 16px",
-  },
-  heroTitle: {
-    fontFamily: "'Syne', sans-serif",
-    fontSize: 24,
-    fontWeight: 700,
-    color: "#ffffff",
-    margin: "0 0 6px",
-    letterSpacing: "-0.3px",
-  },
-  heroSub: {
-    fontSize: 14,
-    color: "rgba(255,255,255,0.4)",
-    margin: 0,
-    fontFamily: "'DM Sans', sans-serif",
-    fontWeight: 300,
-  },
-  heroBadge: {
-    background: "rgba(59,130,246,0.12)",
-    border: "0.5px solid rgba(59,130,246,0.25)",
-    borderRadius: 999,
-    padding: "6px 16px",
-    fontSize: 12,
-    color: "#93b4ff",
-    fontFamily: "'DM Sans', sans-serif",
-    fontWeight: 500,
-    whiteSpace: "nowrap",
-    flexShrink: 0,
   },
   grid: {
     display: "grid",
@@ -185,6 +143,11 @@ function DashboardPage() {
       console.error(error);
     }
   };
+  const today = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
 
   if (!stats) {
     return (
@@ -197,12 +160,6 @@ function DashboardPage() {
       </DashboardLayout>
     );
   }
-
-  const today = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  });
   const completionRate =
     stats.totalTasks === 0
       ? 0
@@ -210,19 +167,51 @@ function DashboardPage() {
 
   return (
     <DashboardLayout>
-      {/* Hero banner */}
-      <div style={styles.heroBanner}>
-        <div style={styles.heroBlueLine} />
-        <div style={{ paddingLeft: 12 }}>
-          <h2 style={styles.heroTitle}>Welcome back 👋</h2>
-          <p style={styles.heroSub}>
-            Here's what's happening across your projects today.
-          </p>
-        </div>
-        <span style={styles.heroBadge}>{today}</span>
-      </div>
+      <Paper
+        elevation={0}
+        sx={{
+          mb: 4,
+          p: 4,
+          borderRadius: 4,
+          background: "linear-gradient(145deg,#111827,#0f172a)",
+          border: "1px solid rgba(255,255,255,.08)",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Box>
+          <Typography
+            variant="h4"
+            sx={{
+              color: "#fff",
+              fontWeight: 700,
+              mb: 1,
+            }}
+          >
+            Welcome Back 👋
+          </Typography>
 
-      {/* Stat cards grid */}
+          <Typography
+            sx={{
+              color: "#94a3b8",
+            }}
+          >
+            Here's what's happening across your projects today.
+          </Typography>
+        </Box>
+
+        <Chip
+          label={today}
+          sx={{
+            bgcolor: "#1e40af",
+            color: "#fff",
+            fontWeight: 600,
+            px: 1,
+          }}
+        />
+      </Paper>
+
       <Grid container spacing={3}>
         {statCards.map(({ key, label, icon, accent, cols }) => (
           <Grid
