@@ -26,22 +26,23 @@ public class DashboardService {
 
     public DashboardStatsResponse getStats(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
-
         long totalProjects = projectRepository.countByUser(user);
-
         long totalTasks = taskRepository.countByProject_User(user);
-
         long completedTasks = taskRepository.countByProject_UserAndStatus(user, TaskStatus.DONE);
-
         long pendingTasks = taskRepository.countByProject_UserAndStatus(user, TaskStatus.TO_DO);
-
         long highPriorityTasks = taskRepository.countByProject_UserAndPriority(user, TaskPriority.HIGH);
+        long todoTasks = taskRepository.countByProject_UserAndStatus(user, TaskStatus.TO_DO);
+        long inProgressTasks = taskRepository.countByProject_UserAndStatus(user, TaskStatus.IN_PROGRESS);
+        long doneTasks = taskRepository.countByProject_UserAndStatus(user, TaskStatus.DONE);
 
         return new DashboardStatsResponse(
                 totalProjects,
                 totalTasks,
                 completedTasks,
                 pendingTasks,
-                highPriorityTasks);
+                highPriorityTasks,
+                todoTasks,
+                inProgressTasks,
+                doneTasks);
     }
 }

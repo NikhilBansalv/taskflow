@@ -8,7 +8,7 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
-
+import { PieChart } from "@mui/x-charts/PieChart";
 import {
   Box,
   Grid,
@@ -55,7 +55,6 @@ const statCards = [
     accent: "#ef4444",
   },
 ];
-
 const styles = {
   loadingWrap: {
     display: "flex",
@@ -164,6 +163,26 @@ function DashboardPage() {
     stats.totalTasks === 0
       ? 0
       : Math.round((stats.completedTasks / stats.totalTasks) * 100);
+  const chartData = [
+    {
+      id: 0,
+      value: stats.doneTasks,
+      label: "Done",
+      color: "#22c55e",
+    },
+    {
+      id: 1,
+      value: stats.inProgressTasks,
+      label: "In Progress",
+      color: "#3b82f6",
+    },
+    {
+      id: 2,
+      value: stats.todoTasks,
+      label: "To Do",
+      color: "#94a3b8",
+    },
+  ];
 
   return (
     <DashboardLayout>
@@ -230,80 +249,178 @@ function DashboardPage() {
           </Grid>
         ))}
       </Grid>
-      <Box
-        sx={{
-          mt: 4,
-          background: "rgba(255,255,255,0.04)",
-          border: "0.5px solid rgba(255,255,255,0.08)",
-          borderRadius: "16px",
-          p: 3,
-        }}
-      >
-        <Typography
-          variant="h6"
-          sx={{
-            color: "#ffffff",
-            fontWeight: 700,
-            mb: 3,
+      <Grid container spacing={3} sx={{ mt: 4 }}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 6,
           }}
         >
-          📈 Analytics
-        </Typography>
-
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            mb: 1,
-          }}
-        >
-          <Typography
+          <Paper
             sx={{
-              color: "#94a3b8",
+              p: 3,
+              borderRadius: 4,
+              background: "linear-gradient(145deg,#111827,#0f172a)",
+              border: "1px solid rgba(255,255,255,.08)",
+              height: "100%",
             }}
           >
-            Task Completion
-          </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                color: "#fff",
+                fontWeight: 700,
+                mb: 3,
+              }}
+            >
+              📊 Task Distribution
+            </Typography>
 
-          <Typography
-            sx={{
-              color: "#ffffff",
-              fontWeight: 600,
-            }}
-          >
-            {completionRate}%
-          </Typography>
-        </Box>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 3,
+              }}
+            >
+              <PieChart
+                series={[
+                  {
+                    data: chartData,
+                    innerRadius: 55,
+                    outerRadius: 90,
+                    paddingAngle: 3,
+                    cornerRadius: 5,
+                  },
+                ]}
+                hideLegend
+                width={220}
+                height={220}
+              />
 
-        <LinearProgress
-          variant="determinate"
-          value={completionRate}
-          sx={{
-            height: 10,
-            borderRadius: 10,
-            backgroundColor: "#1f2937",
+              <Box sx={{ flex: 1 }}>
+                {[
+                  { label: "Done", value: stats.doneTasks, color: "#22c55e" },
+                  {
+                    label: "In Progress",
+                    value: stats.inProgressTasks,
+                    color: "#3b82f6",
+                  },
+                  { label: "To Do", value: stats.todoTasks, color: "#94a3b8" },
+                ].map((item) => (
+                  <Box
+                    key={item.label}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      mb: 2,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          width: 12,
+                          height: 12,
+                          borderRadius: "50%",
+                          bgcolor: item.color,
+                        }}
+                      />
 
-            "& .MuiLinearProgress-bar": {
-              background:
-                completionRate === 100
-                  ? "#22c55e"
-                  : completionRate >= 50
-                    ? "#f59e0b"
-                    : "#3b82f6",
-            },
-          }}
-        />
+                      <Typography sx={{ color: "#fff" }}>
+                        {item.label}
+                      </Typography>
+                    </Box>
 
-        <Typography
-          sx={{
-            mt: 2,
-            color: "#94a3b8",
-            fontSize: "14px",
+                    <Typography
+                      sx={{
+                        color: "#94a3b8",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {item.value}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          </Paper>
+        </Grid>
+
+        <Grid
+          size={{
+            xs: 12,
+            md: 6,
           }}
         >
-          {stats.completedTasks} of {stats.totalTasks} tasks completed
-        </Typography>
-      </Box>
+          <Paper
+            sx={{
+              p: 3,
+              borderRadius: 4,
+              background: "linear-gradient(145deg,#111827,#0f172a)",
+              border: "1px solid rgba(255,255,255,.08)",
+              height: "100%",
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{
+                color: "#fff",
+                fontWeight: 700,
+                mb: 3,
+              }}
+            >
+              📈 Productivity
+            </Typography>
+
+            <Typography
+              variant="h2"
+              sx={{
+                color: "#fff",
+                fontWeight: 700,
+              }}
+            >
+              {completionRate}%
+            </Typography>
+
+            <LinearProgress
+              variant="determinate"
+              value={completionRate}
+              sx={{
+                mt: 3,
+                height: 10,
+                borderRadius: 5,
+                backgroundColor: "#1f2937",
+
+                "& .MuiLinearProgress-bar": {
+                  backgroundColor:
+                    completionRate === 100
+                      ? "#22c55e"
+                      : completionRate >= 50
+                        ? "#f59e0b"
+                        : "#3b82f6",
+                },
+              }}
+            />
+
+            <Typography
+              sx={{
+                mt: 3,
+                color: "#94a3b8",
+              }}
+            >
+              {stats.completedTasks} of {stats.totalTasks} tasks completed
+            </Typography>
+          </Paper>
+        </Grid>
+      </Grid>
     </DashboardLayout>
   );
 }
