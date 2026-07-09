@@ -9,6 +9,8 @@ import com.nikhil.taskmanager.service.ProjectService;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import com.nikhil.taskmanager.repository.TaskRepository;
+import com.nikhil.taskmanager.enums.TaskStatus;
 
 import java.util.List;
 
@@ -18,10 +20,13 @@ public class ProjectController {
 
     private final ProjectService projectService;
     private final UserRepository userRepository;
+    private final TaskRepository taskRepository;
 
-    public ProjectController(ProjectService projectService, UserRepository userRepository) {
+    public ProjectController(ProjectService projectService, UserRepository userRepository,
+            TaskRepository taskRepository) {
         this.projectService = projectService;
         this.userRepository = userRepository;
+        this.taskRepository = taskRepository;
     }
 
     @PostMapping
@@ -39,7 +44,9 @@ public class ProjectController {
                 savedProject.getId(),
                 savedProject.getName(),
                 savedProject.getDescription(),
-                savedProject.getCreatedAt());
+                savedProject.getCreatedAt(),
+                taskRepository.countByProject(project),
+                taskRepository.countByProjectAndStatus(project, TaskStatus.DONE));
     }
 
     @GetMapping
@@ -53,7 +60,9 @@ public class ProjectController {
                         project.getId(),
                         project.getName(),
                         project.getDescription(),
-                        project.getCreatedAt()))
+                        project.getCreatedAt(),
+                        taskRepository.countByProject(project),
+                        taskRepository.countByProjectAndStatus(project, TaskStatus.DONE)))
                 .toList();
     }
 
@@ -66,7 +75,9 @@ public class ProjectController {
                 project.getId(),
                 project.getName(),
                 project.getDescription(),
-                project.getCreatedAt());
+                project.getCreatedAt(),
+                taskRepository.countByProject(project),
+                taskRepository.countByProjectAndStatus(project, TaskStatus.DONE));
     }
 
     @PutMapping("/{id}")
@@ -83,7 +94,9 @@ public class ProjectController {
                 updatedProject.getId(),
                 updatedProject.getName(),
                 updatedProject.getDescription(),
-                updatedProject.getCreatedAt());
+                updatedProject.getCreatedAt(),
+                taskRepository.countByProject(updatedProject),
+                taskRepository.countByProjectAndStatus(updatedProject, TaskStatus.DONE));
     }
 
     @DeleteMapping("/{id}")

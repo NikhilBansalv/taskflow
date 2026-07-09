@@ -7,6 +7,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FolderIcon from "@mui/icons-material/Folder";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
+import LinearProgress from "@mui/material/LinearProgress";
 
 import {
   Button,
@@ -105,7 +106,9 @@ function ProjectsPage() {
   const filteredProjects = projects.filter(
     (project) =>
       project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.description.toLowerCase().includes(searchTerm.toLowerCase()),
+      (project.description ?? "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()),
   );
 
   return (
@@ -316,144 +319,215 @@ function ProjectsPage() {
         </Box>
       ) : (
         <Grid container spacing={3}>
-          {filteredProjects.map((project) => (
-            <Grid item xs={12} md={6} lg={4} key={project.id}>
-              <Card
-                onClick={() => navigate(`/projects/${project.id}`)}
-                sx={{
-                  position: "relative",
-                  cursor: "pointer",
-                  height: 310,
-                  display: "flex",
-                  flexDirection: "column",
-                  overflow: "hidden",
-                  borderRadius: "18px",
-                  background: "linear-gradient(145deg,#111827,#0f172a)",
-                  border: "1px solid rgba(255,255,255,.08)",
-                  transition: ".25s",
-                  "&:hover": {
-                    transform: "translateY(-8px)",
-                    boxShadow: "0 20px 40px rgba(0,0,0,.35)",
-                    borderColor: "#3b82f6",
-                  },
-                }}
-              >
-                <Box
+          {filteredProjects.map((project) => {
+            const progress =
+              project.totalTasks === 0
+                ? 0
+                : (project.completedTasks / project.totalTasks) * 100;
+            return (
+              <Grid item xs={12} md={6} lg={4} key={project.id}>
+                <Card
+                  onClick={() => navigate(`/projects/${project.id}`)}
                   sx={{
-                    width: 6,
-                    background: "linear-gradient(180deg,#3b82f6,#8b5cf6)",
-
-                    position: "absolute",
-
-                    left: 0,
-
-                    top: 0,
-
-                    bottom: 0,
-                  }}
-                />
-                <CardContent
-                  sx={{
+                    position: "relative",
+                    cursor: "pointer",
+                    height: 370,
                     display: "flex",
                     flexDirection: "column",
-                    flexGrow: 1,
+                    overflow: "hidden",
+                    borderRadius: "18px",
+                    background: "linear-gradient(145deg,#111827,#0f172a)",
+                    border: "1px solid rgba(255,255,255,.08)",
+                    transition: ".25s",
+                    "&:hover": {
+                      transform: "translateY(-8px)",
+                      boxShadow: "0 20px 40px rgba(0,0,0,.35)",
+                      borderColor: "#3b82f6",
+                    },
                   }}
                 >
-                  {/* Header */}
-
                   <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <Box
-                        sx={{
-                          width: 42,
-                          height: 42,
-                          borderRadius: 2,
-                          background: "rgba(59,130,246,.12)",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <FolderIcon color="primary" />
-                      </Box>
-
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          color: "#ffffff",
-                          fontWeight: 700,
-                        }}
-                      >
-                        {project.name}
-                      </Typography>
-                    </Box>
-                  </Box>
-
-                  {/* Description */}
-
-                  <Typography
-                    variant="body2"
                     sx={{
-                      color: "#d1d5db",
-                      mt: 2,
-                      lineHeight: 1.8,
-                      display: "-webkit-box",
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                      minHeight: 70,
+                      width: 6,
+                      background: "linear-gradient(180deg,#3b82f6,#8b5cf6)",
+
+                      position: "absolute",
+
+                      left: 0,
+
+                      top: 0,
+
+                      bottom: 0,
+                    }}
+                  />
+                  <CardContent
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      flexGrow: 1,
                     }}
                   >
-                    {project.description || "No description provided."}
-                  </Typography>
+                    {/* Header */}
 
-                  {/* Push footer */}
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <Box
+                          sx={{
+                            width: 42,
+                            height: 42,
+                            borderRadius: 2,
+                            background: "rgba(59,130,246,.12)",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <FolderIcon color="primary" />
+                        </Box>
 
-                  <Box sx={{ mt: "auto" }}>
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            color: "#ffffff",
+                            fontWeight: 700,
+                          }}
+                        >
+                          {project.name}
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    {/* Description */}
+
                     <Typography
-                      variant="caption"
+                      variant="body2"
                       sx={{
-                        color: "#94a3b8",
+                        color: "#d1d5db",
+                        mt: 2,
+                        lineHeight: 1.8,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        minHeight: 70,
                       }}
                     >
-                      📅{" "}
-                      {new Date(project.createdAt).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
+                      {project.description || "No description provided."}
                     </Typography>
-
-                    <Box display="flex" justifyContent="flex-end" mt={2}>
-                      <IconButton
-                        color="primary"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openEditDialog(project);
+                    <Box
+                      sx={{
+                        mt: 2,
+                        mb: 2,
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          mb: 1,
                         }}
                       >
-                        <EditIcon />
-                      </IconButton>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "#94a3b8",
+                            fontWeight: 500,
+                          }}
+                        >
+                          Progress
+                        </Typography>
 
-                      <IconButton
-                        color="error"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openDeleteDialog(project);
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "#94a3b8",
+                          }}
+                        >
+                          {Math.round(progress)}%
+                        </Typography>
+                      </Box>
+
+                      <LinearProgress
+                        variant="determinate"
+                        value={progress}
+                        color={
+                          progress === 100
+                            ? "success"
+                            : progress >= 50
+                              ? "warning"
+                              : "primary"
+                        }
+                        sx={{
+                          height: 8,
+                          borderRadius: 5,
+                          backgroundColor: "#1f2937",
+                        }}
+                      />
+
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: "#94a3b8",
+                          mt: 1,
+                          display: "block",
                         }}
                       >
-                        <DeleteIcon />
-                      </IconButton>
+                        {project.completedTasks} of {project.totalTasks} tasks
+                        completed
+                      </Typography>
                     </Box>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
+
+                    {/* Push footer */}
+
+                    <Box sx={{ mt: "auto" }}>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: "#94a3b8",
+                        }}
+                      >
+                        📅{" "}
+                        {new Date(project.createdAt).toLocaleDateString(
+                          "en-US",
+                          {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          },
+                        )}
+                      </Typography>
+
+                      <Box display="flex" justifyContent="flex-end" mt={2}>
+                        <IconButton
+                          color="primary"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openEditDialog(project);
+                          }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+
+                        <IconButton
+                          color="error"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openDeleteDialog(project);
+                          }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            );
+          })}
         </Grid>
       )}
     </DashboardLayout>
