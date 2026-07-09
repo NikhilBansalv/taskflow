@@ -17,6 +17,8 @@ import {
   DialogActions,
   TextField,
   MenuItem,
+  Select,
+  FormControl,
 } from "@mui/material";
 
 import EditIcon from "@mui/icons-material/Edit";
@@ -95,6 +97,17 @@ function ProjectDetailsPage() {
       setDueDate("");
       setIsEditing(false);
       setEditingTask(null);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const updateTaskStatus = async (taskId, status) => {
+    try {
+      await api.patch(`/api/tasks/${taskId}/status`, {
+        status,
+      });
+
+      fetchTasks();
     } catch (error) {
       console.error(error);
     }
@@ -514,14 +527,30 @@ function ProjectDetailsPage() {
                         }}
                       />
 
-                      <Chip
-                        label={task.status.replace("_", " ")}
-                        size="small"
-                        sx={{
-                          fontWeight: 600,
-                          ...getStatusColor(task.status),
-                        }}
-                      />
+                      <FormControl size="small">
+                        <Select
+                          value={task.status}
+                          onChange={(e) =>
+                            updateTaskStatus(task.id, e.target.value)
+                          }
+                          sx={{
+                            width: 135,
+                            height: 25,
+                            borderRadius: "8px",
+                            fontWeight: 400,
+                            fontSize: "0.75rem",
+                            ...getStatusColor(task.status),
+
+                            "& .MuiSelect-icon": {
+                              color: "white",
+                            },
+                          }}
+                        >
+                          <MenuItem value="TO_DO">TO DO</MenuItem>
+                          <MenuItem value="IN_PROGRESS">IN PROGRESS</MenuItem>
+                          <MenuItem value="DONE">DONE</MenuItem>
+                        </Select>
+                      </FormControl>
                     </Stack>
 
                     <Box

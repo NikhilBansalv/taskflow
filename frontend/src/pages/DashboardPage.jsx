@@ -2,40 +2,48 @@ import { useEffect, useState } from "react";
 
 import api from "../services/api";
 import DashboardLayout from "../components/DashboardLayout";
+import StatCard from "../components/StatCard";
+import FolderIcon from "@mui/icons-material/Folder";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import PendingActionsIcon from "@mui/icons-material/PendingActions";
+import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
+
+import { Box, Grid, Typography, Paper, LinearProgress } from "@mui/material";
 
 const statCards = [
   {
     key: "totalProjects",
     label: "Projects",
-    icon: "📁",
+    icon: <FolderIcon />,
     cols: 4,
     accent: "#3b82f6",
   },
   {
     key: "totalTasks",
     label: "Tasks",
-    icon: "📋",
+    icon: <AssignmentIcon />,
     cols: 4,
     accent: "#8b5cf6",
   },
   {
     key: "completedTasks",
     label: "Completed",
-    icon: "✅",
+    icon: <CheckCircleIcon />,
     cols: 4,
     accent: "#10b981",
   },
   {
     key: "pendingTasks",
     label: "Pending",
-    icon: "⏳",
+    icon: <PendingActionsIcon />,
     cols: 6,
     accent: "#f59e0b",
   },
   {
     key: "highPriorityTasks",
     label: "High Priority",
-    icon: "🔥",
+    icon: <PriorityHighIcon />,
     cols: 6,
     accent: "#ef4444",
   },
@@ -162,42 +170,6 @@ const styles = {
   },
 };
 
-function StatCard({ label, value, icon, accent }) {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <div
-      style={{
-        ...styles.card,
-        ...(hovered
-          ? {
-              background: "rgba(255,255,255,0.065)",
-              borderColor: `${accent}40`,
-            }
-          : {}),
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div style={styles.cardTopRow}>
-        <span style={styles.cardLabel}>{label}</span>
-        <span style={styles.cardIcon}>{icon}</span>
-      </div>
-      <p style={{ ...styles.cardValue, color: hovered ? accent : "#ffffff" }}>
-        {value ?? "—"}
-      </p>
-      <div
-        style={{
-          ...styles.cardAccentBar,
-          background: hovered ? accent : "transparent",
-          opacity: 0.6,
-          transition: "background 0.2s",
-        }}
-      />
-    </div>
-  );
-}
-
 function DashboardPage() {
   const [stats, setStats] = useState(null);
 
@@ -231,6 +203,10 @@ function DashboardPage() {
     month: "long",
     day: "numeric",
   });
+  const completionRate =
+    stats.totalTasks === 0
+      ? 0
+      : Math.round((stats.completedTasks / stats.totalTasks) * 100);
 
   return (
     <DashboardLayout>
@@ -247,23 +223,98 @@ function DashboardPage() {
       </div>
 
       {/* Stat cards grid */}
-      <div style={styles.grid}>
+      <Grid container spacing={3}>
         {statCards.map(({ key, label, icon, accent, cols }) => (
-          <div
+          <Grid
             key={key}
-            style={{
-              gridColumn: `span ${cols}`,
+            size={{
+              xs: 12,
+              md: cols === 4 ? 4 : 6,
             }}
           >
             <StatCard
-              label={label}
+              title={label}
               value={stats[key]}
               icon={icon}
-              accent={accent}
+              color={accent}
             />
-          </div>
+          </Grid>
         ))}
-      </div>
+      </Grid>
+      <Box
+        sx={{
+          mt: 4,
+          background: "rgba(255,255,255,0.04)",
+          border: "0.5px solid rgba(255,255,255,0.08)",
+          borderRadius: "16px",
+          p: 3,
+        }}
+      >
+        <Typography
+          variant="h6"
+          sx={{
+            color: "#ffffff",
+            fontWeight: 700,
+            mb: 3,
+          }}
+        >
+          📈 Analytics
+        </Typography>
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            mb: 1,
+          }}
+        >
+          <Typography
+            sx={{
+              color: "#94a3b8",
+            }}
+          >
+            Task Completion
+          </Typography>
+
+          <Typography
+            sx={{
+              color: "#ffffff",
+              fontWeight: 600,
+            }}
+          >
+            {completionRate}%
+          </Typography>
+        </Box>
+
+        <LinearProgress
+          variant="determinate"
+          value={completionRate}
+          sx={{
+            height: 10,
+            borderRadius: 10,
+            backgroundColor: "#1f2937",
+
+            "& .MuiLinearProgress-bar": {
+              background:
+                completionRate === 100
+                  ? "#22c55e"
+                  : completionRate >= 50
+                    ? "#f59e0b"
+                    : "#3b82f6",
+            },
+          }}
+        />
+
+        <Typography
+          sx={{
+            mt: 2,
+            color: "#94a3b8",
+            fontSize: "14px",
+          }}
+        >
+          {stats.completedTasks} of {stats.totalTasks} tasks completed
+        </Typography>
+      </Box>
     </DashboardLayout>
   );
 }
