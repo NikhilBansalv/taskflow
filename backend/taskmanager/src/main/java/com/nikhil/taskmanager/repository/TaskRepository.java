@@ -7,8 +7,11 @@ import com.nikhil.taskmanager.model.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.nikhil.taskmanager.model.User;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByProject(Project project);
@@ -28,4 +31,17 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     long countByProjectAndStatus(Project project, TaskStatus status);
 
     Optional<Task> findByIdAndProject_User(Long id, User user);
+
+    List<Task> findByProject_UserAndStatusInOrderByDueDateAsc(
+            User user,
+            List<TaskStatus> statuses,
+            Pageable pageable);
+
+    @Query("""
+                SELECT MIN(t.dueDate)
+                FROM Task t
+                WHERE t.project.id = :projectId
+                  AND t.status IN ('TO_DO', 'IN_PROGRESS')
+            """)
+    LocalDate findNextDueDateByProjectId(Long projectId);
 }

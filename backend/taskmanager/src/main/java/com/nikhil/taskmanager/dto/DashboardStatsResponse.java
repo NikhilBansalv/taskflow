@@ -1,5 +1,7 @@
 package com.nikhil.taskmanager.dto;
 
+import java.util.List;
+
 public class DashboardStatsResponse {
 
     private long totalProjects;
@@ -10,6 +12,8 @@ public class DashboardStatsResponse {
     private long todoTasks;
     private long inProgressTasks;
     private long doneTasks;
+    private List<ActiveProjectResponse> activeProjects;
+    private List<UpcomingTaskResponse> upcomingTasks;
 
     public DashboardStatsResponse(
             long totalProjects,
@@ -19,7 +23,9 @@ public class DashboardStatsResponse {
             long highPriorityTasks,
             long todoTasks,
             long inProgressTasks,
-            long doneTasks) {
+            long doneTasks,
+            List<ActiveProjectResponse> activeProjects,
+            List<UpcomingTaskResponse> upcomingTasks) {
 
         this.totalProjects = totalProjects;
         this.totalTasks = totalTasks;
@@ -29,6 +35,8 @@ public class DashboardStatsResponse {
         this.todoTasks = todoTasks;
         this.inProgressTasks = inProgressTasks;
         this.doneTasks = doneTasks;
+        this.activeProjects = activeProjects;
+        this.upcomingTasks = upcomingTasks;
     }
 
     public long getTotalProjects() {
@@ -61,5 +69,13 @@ public class DashboardStatsResponse {
 
     public long getDoneTasks() {
         return doneTasks;
+    }
+
+    public List<ActiveProjectResponse> getActiveProjects() {
+        return activeProjects;
+    }
+
+    public List<UpcomingTaskResponse> getUpcomingTasks() {
+        return upcomingTasks;
     }
 }

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import DashboardLayout from "../components/DashboardLayout";
 import StatCard from "../components/StatCard";
 import FolderIcon from "@mui/icons-material/Folder";
+import FolderRoundedIcon from "@mui/icons-material/FolderRounded";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
@@ -129,6 +130,9 @@ const styles = {
 
 function DashboardPage() {
   const [stats, setStats] = useState(null);
+  const activeProjects = stats?.activeProjects || [];
+  const upcomingTasks = stats?.upcomingTasks || [];
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchStats();
@@ -183,6 +187,41 @@ function DashboardPage() {
       color: "#94a3b8",
     },
   ];
+  const getDueLabel = (dueDate) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const due = new Date(dueDate);
+    due.setHours(0, 0, 0, 0);
+
+    const diff = (due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24);
+
+    if (diff < 0)
+      return {
+        label: "Overdue",
+        color: "#ef4444",
+      };
+
+    if (diff === 0)
+      return {
+        label: "Today",
+        color: "#f97316",
+      };
+
+    if (diff === 1)
+      return {
+        label: "Tomorrow",
+        color: "#facc15",
+      };
+
+    return {
+      label: due.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      }),
+      color: "#94a3b8",
+    };
+  };
 
   return (
     <DashboardLayout>
@@ -419,6 +458,252 @@ function DashboardPage() {
               {stats.completedTasks} of {stats.totalTasks} tasks completed
             </Typography>
           </Paper>
+        </Grid>
+        <Grid container spacing={3} sx={{ mt: 4, width: "100%" }}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6,
+              width: "100%",
+            }}
+          >
+            <Paper
+              sx={{
+                p: 3,
+                borderRadius: 4,
+                background: "linear-gradient(145deg,#111827,#0f172a)",
+                border: "1px solid rgba(255,255,255,.08)",
+                height: "100%",
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  color: "#fff",
+                  fontWeight: 700,
+                  mb: 3,
+                }}
+              >
+                🔥 Active Projects
+              </Typography>
+              <Box>
+                {activeProjects.length === 0 ? (
+                  <Typography
+                    sx={{
+                      color: "#94a3b8",
+                      textAlign: "center",
+                      py: 3,
+                    }}
+                  >
+                    No recent projects found.
+                  </Typography>
+                ) : (
+                  activeProjects.map((project) => (
+                    <Paper
+                      onClick={() => navigate(`/projects/${project.id}`)}
+                      key={project.id}
+                      elevation={0}
+                      sx={{
+                        p: 2,
+                        mb: 2,
+                        borderRadius: 3,
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(255,255,255,.06)",
+                        transition: "0.25s",
+
+                        "&:hover": {
+                          transform: "translateY(-3px)",
+                          borderColor: "#3b82f6",
+                          cursor: "pointer",
+                        },
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                          }}
+                        >
+                          <FolderRoundedIcon
+                            sx={{
+                              color: "#3b82f6",
+                              fontSize: 20,
+                            }}
+                          />
+
+                          <Typography
+                            variant="subtitle1"
+                            sx={{
+                              color: "#fff",
+                              fontWeight: 600,
+                            }}
+                          >
+                            {project.name}
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      <Box sx={{ mt: 1 }}>
+                        <Typography
+                          sx={{
+                            color: "#94a3b8",
+                            fontSize: 14,
+                          }}
+                        >
+                          {project.pendingTasks} Pending Tasks
+                        </Typography>
+
+                        <Typography
+                          sx={{
+                            color:
+                              project.pendingTasks === 0
+                                ? "#22c55e"
+                                : "#3b82f6",
+                            mt: 0.5,
+                            fontSize: 13,
+                            fontWeight: 600,
+                          }}
+                        >
+                          {project.nextDueDate
+                            ? `Next Due • ${new Date(
+                                project.nextDueDate,
+                              ).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                              })}`
+                            : "✓ Completed"}
+                        </Typography>
+                      </Box>
+                    </Paper>
+                  ))
+                )}
+              </Box>
+            </Paper>
+          </Grid>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6,
+            }}
+          >
+            <Paper
+              sx={{
+                p: 3,
+                borderRadius: 4,
+                background: "linear-gradient(145deg,#111827,#0f172a)",
+                border: "1px solid rgba(255,255,255,.08)",
+                height: "100%",
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  color: "#fff",
+                  fontWeight: 700,
+                  mb: 3,
+                }}
+              >
+                📋 Upcoming Tasks
+              </Typography>
+              <Box>
+                {upcomingTasks.length === 0 ? (
+                  <Typography
+                    sx={{
+                      color: "#94a3b8",
+                      textAlign: "center",
+                      py: 3,
+                    }}
+                  >
+                    No upcoming tasks 🎉
+                  </Typography>
+                ) : (
+                  upcomingTasks.map((task) => {
+                    const dueInfo = getDueLabel(task.dueDate);
+
+                    return (
+                      <Paper
+                        key={task.id}
+                        elevation={0}
+                        onClick={() => navigate(`/projects/${task.projectId}`)}
+                        sx={{
+                          p: 2,
+                          mb: 2,
+                          borderRadius: 3,
+                          background: "rgba(255,255,255,0.04)",
+                          border: "1px solid rgba(255,255,255,.06)",
+                          transition: ".25s",
+
+                          "&:hover": {
+                            transform: "translateY(-3px)",
+                            borderColor: "#3b82f6",
+                            cursor: "pointer",
+                          },
+                        }}
+                      >
+                        <Typography
+                          sx={{
+                            color: "#fff",
+                            fontWeight: 600,
+                          }}
+                        >
+                          {task.title}
+                        </Typography>
+
+                        <Typography
+                          sx={{
+                            color: "#94a3b8",
+                            mt: 0.5,
+                            fontSize: "14px",
+                          }}
+                        >
+                          {task.projectName}
+                        </Typography>
+
+                        <Box
+                          sx={{
+                            mt: 2,
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Chip
+                            label={task.priority}
+                            size="small"
+                            color={
+                              task.priority === "HIGH"
+                                ? "error"
+                                : task.priority === "MEDIUM"
+                                  ? "warning"
+                                  : "success"
+                            }
+                          />
+
+                          <Typography
+                            sx={{
+                              color: dueInfo.color,
+                              fontWeight: 600,
+                              fontSize: "12px",
+                            }}
+                          >
+                            {dueInfo.label}
+                          </Typography>
+                        </Box>
+                      </Paper>
+                    );
+                  })
+                )}
+              </Box>
+            </Paper>
+          </Grid>
         </Grid>
       </Grid>
     </DashboardLayout>
