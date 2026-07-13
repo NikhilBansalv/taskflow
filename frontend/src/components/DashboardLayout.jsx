@@ -8,6 +8,7 @@ import {
   Typography,
   Box,
   Divider,
+  Avatar,
 } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
@@ -19,6 +20,7 @@ const drawerWidth = 240;
 function DashboardLayout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const email = localStorage.getItem("email");
 
   const buttonStyle = {
     borderRadius: 2,
@@ -106,21 +108,58 @@ function DashboardLayout({ children }) {
             </ListItemButton>
           </ListItem>
 
-          <Divider
-            sx={{
-              borderColor: "rgba(255,255,255,0.08)",
-              mx: 2,
-              mb: 2,
-            }}
-          />
-          <Box sx={{ mb: 2 }}>
+          <Box sx={{ mt: "auto", mb: 2 }}>
+            <Divider
+              sx={{
+                borderColor: "rgba(255,255,255,0.08)",
+                mx: 2,
+                mb: 2,
+              }}
+            />
+
+            <ListItem disablePadding>
+              <ListItemButton
+                selected={location.pathname === "/profile"}
+                onClick={() => navigate("/profile")}
+                sx={buttonStyle}
+              >
+                <Avatar
+                  sx={{
+                    width: 34,
+                    height: 34,
+                    mr: 1.5,
+                    bgcolor: "#2563eb",
+                    fontSize: 14,
+                  }}
+                >
+                  {email?.charAt(0).toUpperCase()}
+                </Avatar>
+                <ListItemText
+                  primary="My Profile"
+                  secondary={email}
+                  slotProps={{
+                    primary: {
+                      sx: { color: "#fff", fontSize: 14 },
+                    },
+                    secondary: {
+                      sx: {
+                        color: "#94a3b8",
+                        fontSize: 11,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      },
+                    },
+                  }}
+                />
+              </ListItemButton>
+            </ListItem>
+
             <ListItem disablePadding>
               <ListItemButton
                 sx={buttonStyle}
                 onClick={() => {
                   localStorage.removeItem("token");
                   localStorage.removeItem("email");
-
                   navigate("/");
                 }}
               >
@@ -128,6 +167,7 @@ function DashboardLayout({ children }) {
                 <ListItemText primary="Logout" />
               </ListItemButton>
             </ListItem>
+
             <Typography
               variant="caption"
               sx={{

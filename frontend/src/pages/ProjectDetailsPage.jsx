@@ -19,6 +19,7 @@ import {
   MenuItem,
   Select,
   FormControl,
+  LinearProgress,
 } from "@mui/material";
 
 import EditIcon from "@mui/icons-material/Edit";
@@ -116,10 +117,11 @@ function ProjectDetailsPage() {
       await api.patch(`/api/tasks/${taskId}/status`, {
         status,
       });
-
+      showSnackbar("Task status updated successfully!", "success");
       fetchTasks();
     } catch (error) {
       console.error(error);
+      showSnackbar("Failed to update task status.", "error");
     }
   };
   const deleteTask = async () => {
@@ -202,6 +204,10 @@ function ProjectDetailsPage() {
       task.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
+  const completedTasks = tasks.filter((task) => task.status === "DONE").length;
+
+  const progress =
+    tasks.length === 0 ? 0 : Math.round((completedTasks / tasks.length) * 100);
   const showSnackbar = (message, severity = "success") => {
     setSnackbar({
       open: true,
@@ -248,6 +254,57 @@ function ProjectDetailsPage() {
         }}
       >
         {project.description}
+        <Box
+          sx={{
+            mt: 3,
+            mb: 4,
+            p: 3,
+            borderRadius: 3,
+            background: "#111827",
+            border: "1px solid #374151",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
+            }}
+          >
+            <Typography sx={{ color: "#fff", fontWeight: 600 }}>
+              Project Progress
+            </Typography>
+
+            <Typography sx={{ color: "#fff", fontWeight: 700 }}>
+              {progress}%
+            </Typography>
+          </Box>
+
+          <LinearProgress
+            variant="determinate"
+            value={progress}
+            sx={{
+              height: 10,
+              borderRadius: 5,
+              backgroundColor: "#1f2937",
+
+              "& .MuiLinearProgress-bar": {
+                backgroundColor: progress === 100 ? "#22c55e" : "#3b82f6",
+              },
+            }}
+          />
+
+          <Typography
+            sx={{
+              mt: 2,
+              color: "#94a3b8",
+              fontSize: 14,
+            }}
+          >
+            {completedTasks} of {tasks.length} tasks completed
+          </Typography>
+        </Box>
       </Typography>
       <Box
         sx={{

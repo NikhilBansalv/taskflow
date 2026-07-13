@@ -5,6 +5,9 @@ import com.nikhil.taskmanager.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.nikhil.taskmanager.security.JwtUtil;
+import com.nikhil.taskmanager.dto.UserResponse;
+import com.nikhil.taskmanager.dto.UpdateUserRequest;
+import com.nikhil.taskmanager.dto.UserResponse;
 
 @Service
 public class UserService {
@@ -38,5 +41,34 @@ public class UserService {
             throw new RuntimeException("Invalid password");
         }
         return jwtUtil.generateToken(user.getEmail());
+    }
+
+    public UserResponse getUserProfile(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return new UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getCreatedAt());
+    }
+
+    public UserResponse updateUserProfile(
+            String email,
+            UpdateUserRequest request) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setName(request.getName());
+
+        User updatedUser = userRepository.save(user);
+
+        return new UserResponse(
+                updatedUser.getId(),
+                updatedUser.getName(),
+                updatedUser.getEmail(),
+                updatedUser.getCreatedAt());
     }
 }
