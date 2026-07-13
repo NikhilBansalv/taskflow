@@ -8,6 +8,7 @@ import FolderIcon from "@mui/icons-material/Folder";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import LinearProgress from "@mui/material/LinearProgress";
+import SnackbarAlert from "../components/SnackbarAlert";
 
 import {
   Button,
@@ -37,6 +38,11 @@ function ProjectsPage() {
   const [projectToDelete, setProjectToDelete] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   useEffect(() => {
     fetchProjects();
@@ -56,12 +62,14 @@ function ProjectsPage() {
         name,
         description,
       });
+      showSnackbar("Project created successfully!", "success");
       setShowForm(false);
       setName("");
       setDescription("");
       fetchProjects();
     } catch (error) {
       console.error(error);
+      showSnackbar("Failed to create project.", "error");
     }
   };
   const openEditDialog = (project) => {
@@ -72,20 +80,24 @@ function ProjectsPage() {
     setShowForm(true);
   };
   const updateProject = async () => {
-    await api.put(
-      `/api/projects/${editingProject.id}`,
-
-      {
+    try {
+      await api.put(`/api/projects/${editingProject.id}`, {
         name,
         description,
-      },
-    );
-    fetchProjects();
-    setShowForm(false);
-    setIsEditing(false);
-    setEditingProject(null);
-    setName("");
-    setDescription("");
+      });
+
+      showSnackbar("Project updated successfully!", "success");
+
+      fetchProjects();
+      setShowForm(false);
+      setIsEditing(false);
+      setEditingProject(null);
+      setName("");
+      setDescription("");
+    } catch (error) {
+      console.error(error);
+      showSnackbar("Failed to update project.", "error");
+    }
   };
   const openDeleteDialog = (project) => {
     setProjectToDelete(project);
@@ -94,10 +106,12 @@ function ProjectsPage() {
   const deleteProject = async () => {
     try {
       await api.delete(`/api/projects/${projectToDelete.id}`);
+      showSnackbar("Project deleted successfully!", "success");
       fetchProjects();
       setDeleteDialogOpen(false);
       setProjectToDelete(null);
     } catch (error) {
+      showSnackbar("Failed to delete project.", "error");
       console.log(error.response);
       console.log(error.response?.status);
       console.log(error.response?.data);
@@ -110,6 +124,13 @@ function ProjectsPage() {
         .toLowerCase()
         .includes(searchTerm.toLowerCase()),
   );
+  const showSnackbar = (message, severity = "success") => {
+    setSnackbar({
+      open: true,
+      message,
+      severity,
+    });
+  };
 
   return (
     <DashboardLayout>
@@ -530,6 +551,17 @@ function ProjectsPage() {
           })}
         </Grid>
       )}
+      <SnackbarAlert
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() =>
+          setSnackbar((prev) => ({
+            ...prev,
+            open: false,
+          }))
+        }
+      />
     </DashboardLayout>
   );
 }

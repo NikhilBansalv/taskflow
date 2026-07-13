@@ -25,6 +25,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AddIcon from "@mui/icons-material/Add";
+import SnackbarAlert from "../components/SnackbarAlert";
 
 function ProjectDetailsPage() {
   const { id } = useParams();
@@ -41,6 +42,11 @@ function ProjectDetailsPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   useEffect(() => {
     fetchProject();
@@ -71,6 +77,7 @@ function ProjectDetailsPage() {
         priority,
         dueDate,
       });
+      showSnackbar("Task created successfully!", "success");
       setOpenDialog(false);
       setTitle("");
       setDescription("");
@@ -79,6 +86,7 @@ function ProjectDetailsPage() {
       fetchTasks();
     } catch (error) {
       console.error(error);
+      showSnackbar("Failed to create task.", "error");
     }
   };
   const updateTask = async () => {
@@ -89,6 +97,7 @@ function ProjectDetailsPage() {
         priority,
         dueDate,
       });
+      showSnackbar("Task updated successfully!", "success");
       fetchTasks();
       setOpenDialog(false);
       setTitle("");
@@ -99,6 +108,7 @@ function ProjectDetailsPage() {
       setEditingTask(null);
     } catch (error) {
       console.error(error);
+      showSnackbar("Failed to update task.", "error");
     }
   };
   const updateTaskStatus = async (taskId, status) => {
@@ -115,11 +125,13 @@ function ProjectDetailsPage() {
   const deleteTask = async () => {
     try {
       await api.delete(`/api/tasks/${taskToDelete.id}`);
+      showSnackbar("Task deleted successfully!", "success");
       fetchTasks();
       setDeleteDialogOpen(false);
       setTaskToDelete(null);
     } catch (error) {
       console.error(error);
+      showSnackbar("Failed to delete task.", "error");
     }
   };
   const openEditDialog = (task) => {
@@ -190,6 +202,13 @@ function ProjectDetailsPage() {
       task.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
+  const showSnackbar = (message, severity = "success") => {
+    setSnackbar({
+      open: true,
+      message,
+      severity,
+    });
+  };
 
   if (!project) {
     return (
@@ -603,6 +622,17 @@ function ProjectDetailsPage() {
           ))}
         </Grid>
       )}
+      <SnackbarAlert
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() =>
+          setSnackbar((prev) => ({
+            ...prev,
+            open: false,
+          }))
+        }
+      />
     </DashboardLayout>
   );
 }
