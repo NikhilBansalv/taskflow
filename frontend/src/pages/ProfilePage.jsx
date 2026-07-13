@@ -92,7 +92,7 @@ function ProfilePage() {
 
       <Paper
         sx={{
-          p: 4,
+          p: { xs: 2.5, sm: 4 },
           borderRadius: 4,
           background: "linear-gradient(145deg,#111827,#0f172a)",
           border: "1px solid rgba(255,255,255,.08)",
@@ -101,7 +101,8 @@ function ProfilePage() {
         <Box
           sx={{
             display: "flex",
-            alignItems: "center",
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: { xs: "flex-start", sm: "center" },
             gap: 3,
           }}
         >
@@ -120,7 +121,13 @@ function ProfilePage() {
               {user.name}
             </Typography>
 
-            <Typography sx={{ color: "#94a3b8", mt: 0.5 }}>
+            <Typography
+              sx={{
+                color: "#94a3b8",
+                mt: 0.5,
+                overflowWrap: "anywhere",
+              }}
+            >
               {user.email}
             </Typography>
           </Box>
@@ -128,7 +135,8 @@ function ProfilePage() {
             variant="outlined"
             onClick={openEditDialog}
             sx={{
-              ml: "auto",
+              ml: { xs: 0, sm: "auto" },
+              width: { xs: "100%", sm: "auto" },
               textTransform: "none",
             }}
           >
@@ -161,7 +169,14 @@ function ProfilePage() {
             <Typography sx={{ color: "#64748b", fontSize: 13 }}>
               Email Address
             </Typography>
-            <Typography sx={{ color: "#fff", mt: 0.5, fontWeight: 600 }}>
+            <Typography
+              sx={{
+                color: "#fff",
+                mt: 0.5,
+                fontWeight: 600,
+                overflowWrap: "anywhere",
+              }}
+            >
               {user.email}
             </Typography>
           </Box>
@@ -184,6 +199,12 @@ function ProfilePage() {
         onClose={() => setEditDialogOpen(false)}
         fullWidth
         maxWidth="sm"
+        PaperProps={{
+          sx: {
+            m: { xs: 2, sm: 4 },
+            width: { xs: "calc(100% - 32px)", sm: "100%" },
+          },
+        }}
       >
         <DialogTitle>Edit Profile</DialogTitle>
 

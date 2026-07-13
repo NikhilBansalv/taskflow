@@ -250,67 +250,69 @@ function ProjectDetailsPage() {
       <Typography
         sx={{
           color: "#94a3b8",
-          mb: 4,
+          mb: 3,
         }}
       >
         {project.description}
-        <Box
-          sx={{
-            mt: 3,
-            mb: 4,
-            p: 3,
-            borderRadius: 3,
-            background: "#111827",
-            border: "1px solid #374151",
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              mb: 2,
-            }}
-          >
-            <Typography sx={{ color: "#fff", fontWeight: 600 }}>
-              Project Progress
-            </Typography>
-
-            <Typography sx={{ color: "#fff", fontWeight: 700 }}>
-              {progress}%
-            </Typography>
-          </Box>
-
-          <LinearProgress
-            variant="determinate"
-            value={progress}
-            sx={{
-              height: 10,
-              borderRadius: 5,
-              backgroundColor: "#1f2937",
-
-              "& .MuiLinearProgress-bar": {
-                backgroundColor: progress === 100 ? "#22c55e" : "#3b82f6",
-              },
-            }}
-          />
-
-          <Typography
-            sx={{
-              mt: 2,
-              color: "#94a3b8",
-              fontSize: 14,
-            }}
-          >
-            {completedTasks} of {tasks.length} tasks completed
-          </Typography>
-        </Box>
       </Typography>
       <Box
         sx={{
+          mt: 3,
+          mb: 4,
+          p: 3,
+          borderRadius: 3,
+          background: "#111827",
+          border: "1px solid #374151",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 2,
+          }}
+        >
+          <Typography sx={{ color: "#fff", fontWeight: 600 }}>
+            Project Progress
+          </Typography>
+
+          <Typography sx={{ color: "#fff", fontWeight: 700 }}>
+            {progress}%
+          </Typography>
+        </Box>
+
+        <LinearProgress
+          variant="determinate"
+          value={progress}
+          sx={{
+            height: 10,
+            borderRadius: 5,
+            backgroundColor: "#1f2937",
+
+            "& .MuiLinearProgress-bar": {
+              backgroundColor: progress === 100 ? "#22c55e" : "#3b82f6",
+            },
+          }}
+        />
+
+        <Typography
+          sx={{
+            mt: 2,
+            color: "#94a3b8",
+            fontSize: 14,
+          }}
+        >
+          {completedTasks} of {tasks.length} tasks completed
+        </Typography>
+      </Box>
+      <Box
+        sx={{
           display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: { xs: "stretch", sm: "center" },
+          gap: 2,
           mb: 4,
         }}
       >
@@ -326,8 +328,10 @@ function ProjectDetailsPage() {
         <Box
           sx={{
             display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
             alignItems: "center",
             gap: 2,
+            width: { xs: "100%", sm: "auto" },
           }}
         >
           <TextField
@@ -336,7 +340,7 @@ function ProjectDetailsPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             sx={{
-              width: 280,
+              width: { xs: "100%", sm: 280 },
 
               "& .MuiOutlinedInput-root": {
                 borderRadius: "12px",
@@ -376,6 +380,12 @@ function ProjectDetailsPage() {
         onClose={() => setOpenDialog(false)}
         fullWidth
         maxWidth="sm"
+        PaperProps={{
+          sx: {
+            m: { xs: 2, sm: 4 },
+            width: { xs: "calc(100% - 32px)", sm: "100%" },
+          },
+        }}
       >
         <DialogTitle>
           {isEditing ? "Update Task" : "Create New Task"}
@@ -450,6 +460,12 @@ function ProjectDetailsPage() {
       <Dialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
+        PaperProps={{
+          sx: {
+            m: { xs: 2, sm: 4 },
+            width: { xs: "calc(100% - 32px)", sm: "100%" },
+          },
+        }}
       >
         <DialogTitle sx={{ fontWeight: 700 }}>Delete Task</DialogTitle>
 
@@ -532,6 +548,7 @@ function ProjectDetailsPage() {
             sx={{
               borderRadius: "12px",
               textTransform: "none",
+              width: { xs: "100%", sm: "auto" },
             }}
           >
             New Task
@@ -543,7 +560,7 @@ function ProjectDetailsPage() {
             <Grid key={task.id} size={{ xs: 12, md: 6 }}>
               <Card
                 sx={{
-                  width: "75%",
+                  width: "100%",
                   background: "#111827",
                   border: "1px solid #374151",
                   borderRadius: 3,
@@ -561,7 +578,7 @@ function ProjectDetailsPage() {
                     height: "100%",
                     display: "flex",
                     flexDirection: "column",
-                    p: 3,
+                    p: { xs: 2, sm: 3 },
                   }}
                 >
                   <Typography
@@ -631,9 +648,11 @@ function ProjectDetailsPage() {
 
                     <Box
                       sx={{
-                        display: "grid",
-                        gridTemplateColumns: "1fr auto",
-                        alignItems: "center",
+                        display: "flex",
+                        flexDirection: { xs: "column", sm: "row" },
+                        justifyContent: "space-between",
+                        alignItems: { xs: "flex-start", sm: "center" },
+                        gap: 1,
                         width: "100%",
                       }}
                     >
@@ -654,7 +673,11 @@ function ProjectDetailsPage() {
                         })}
                       </Typography>
 
-                      <Box sx={{ justifySelf: "end" }}>
+                      <Box
+                        sx={{
+                          alignSelf: { xs: "flex-end", sm: "center" },
+                        }}
+                      >
                         <IconButton
                           size="small"
                           color="primary"

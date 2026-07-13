@@ -126,7 +126,7 @@ function LoginPage() {
           zIndex: 2,
           width: "100%",
           maxWidth: 420,
-          p: "40px 36px",
+          p: { xs: "32px 20px", sm: "40px 36px" },
           borderRadius: "20px",
           background: "rgba(255,255,255,0.035)",
           border: "0.5px solid rgba(255,255,255,0.1)",
@@ -161,7 +161,7 @@ function LoginPage() {
         <Typography
           sx={{
             fontFamily: "'Syne', sans-serif",
-            fontSize: 34,
+            fontSize: { xs: 30, sm: 34 },
             fontWeight: 700,
             color: "#fff",
             letterSpacing: "-0.5px",
@@ -262,8 +262,6 @@ function LoginPage() {
             Forgot password?
           </Link>
         </Box>
-
-        {/* Sign in button */}
         <Button
           variant="contained"
           fullWidth
@@ -311,11 +309,13 @@ function LoginPage() {
           sx={{ fontSize: 13, color: "rgba(255,255,255,0.3)" }}
         >
           <Link
-            href="/register"
+            component="button"
+            onClick={() => navigate("/register")}
             underline="none"
             sx={{
               color: "#60a5fa",
               fontWeight: 500,
+              cursor: "pointer",
               "&:hover": { color: "#93c5fd" },
             }}
           >

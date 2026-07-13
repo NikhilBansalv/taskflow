@@ -229,13 +229,15 @@ function DashboardPage() {
         elevation={0}
         sx={{
           mb: 4,
-          p: 4,
+          p: { xs: 3, md: 4 },
           borderRadius: 4,
           background: "linear-gradient(145deg,#111827,#0f172a)",
           border: "1px solid rgba(255,255,255,.08)",
           display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: { xs: "flex-start", sm: "center" },
+          gap: 2,
         }}
       >
         <Box>
@@ -253,6 +255,7 @@ function DashboardPage() {
           <Typography
             sx={{
               color: "#94a3b8",
+              fontSize: { xs: "1.7rem", sm: "2.125rem" },
             }}
           >
             Here's what's happening across your projects today.
@@ -266,6 +269,7 @@ function DashboardPage() {
             color: "#fff",
             fontWeight: 600,
             px: 1,
+            alignSelf: { xs: "flex-start", sm: "center" },
           }}
         />
       </Paper>
@@ -318,6 +322,7 @@ function DashboardPage() {
             <Box
               sx={{
                 display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
                 alignItems: "center",
                 justifyContent: "space-between",
                 gap: 3,
@@ -338,7 +343,12 @@ function DashboardPage() {
                 height={220}
               />
 
-              <Box sx={{ flex: 1 }}>
+              <Box
+                sx={{
+                  flex: 1,
+                  width: { xs: "100%", sm: "auto" },
+                }}
+              >
                 {[
                   { label: "Done", value: stats.doneTasks, color: "#22c55e" },
                   {
@@ -459,17 +469,20 @@ function DashboardPage() {
             </Typography>
           </Paper>
         </Grid>
-        <Grid container spacing={3} sx={{ mt: 4, width: "100%" }}>
+        <Grid
+          container
+          spacing={{ xs: 2, md: 3 }}
+          sx={{ mt: { xs: 2, md: 4 }, width: "100%" }}
+        >
           <Grid
             size={{
               xs: 12,
               md: 6,
-              width: "100%",
             }}
           >
             <Paper
               sx={{
-                p: 3,
+                p: { xs: 2, sm: 3 },
                 borderRadius: 4,
                 background: "linear-gradient(145deg,#111827,#0f172a)",
                 border: "1px solid rgba(255,255,255,.08)",
@@ -596,7 +609,7 @@ function DashboardPage() {
           >
             <Paper
               sx={{
-                p: 3,
+                p: { xs: 2, sm: 3 },
                 borderRadius: 4,
                 background: "linear-gradient(145deg,#111827,#0f172a)",
                 border: "1px solid rgba(255,255,255,.08)",

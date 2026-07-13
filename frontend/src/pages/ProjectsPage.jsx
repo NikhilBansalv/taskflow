@@ -137,8 +137,10 @@ function ProjectsPage() {
       <Box
         sx={{
           display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: { xs: "flex-start", sm: "center" },
+          gap: 2,
           mb: 4,
         }}
       >
@@ -174,6 +176,7 @@ function ProjectsPage() {
             px: 3,
             py: 1.2,
             fontWeight: 600,
+            width: { xs: "100%", sm: "auto" },
           }}
         >
           New Project
@@ -226,6 +229,12 @@ function ProjectsPage() {
         onClose={() => setShowForm(false)}
         fullWidth
         maxWidth="sm"
+        PaperProps={{
+          sx: {
+            m: { xs: 2, sm: 4 },
+            width: { xs: "calc(100% - 32px)", sm: "100%" },
+          },
+        }}
       >
         <DialogTitle>
           {isEditing ? "Update Project" : "Create New Project"}
@@ -275,6 +284,12 @@ function ProjectsPage() {
         onClose={() => {
           setDeleteDialogOpen(false);
           setProjectToDelete(null);
+        }}
+        PaperProps={{
+          sx: {
+            m: { xs: 2, sm: 4 },
+            width: { xs: "calc(100% - 32px)", sm: "100%" },
+          },
         }}
       >
         <DialogTitle
@@ -352,7 +367,8 @@ function ProjectsPage() {
                   sx={{
                     position: "relative",
                     cursor: "pointer",
-                    height: 370,
+                    height: { xs: "auto", sm: 370 },
+                    minHeight: { xs: 350, sm: 370 },
                     display: "flex",
                     flexDirection: "column",
                     overflow: "hidden",
@@ -383,13 +399,12 @@ function ProjectsPage() {
                   />
                   <CardContent
                     sx={{
+                      p: { xs: 2, sm: 3 },
                       display: "flex",
                       flexDirection: "column",
                       flexGrow: 1,
                     }}
                   >
-                    {/* Header */}
-
                     <Box
                       display="flex"
                       justifyContent="space-between"
@@ -421,9 +436,6 @@ function ProjectsPage() {
                         </Typography>
                       </Box>
                     </Box>
-
-                    {/* Description */}
-
                     <Typography
                       variant="body2"
                       sx={{
@@ -501,9 +513,6 @@ function ProjectsPage() {
                         completed
                       </Typography>
                     </Box>
-
-                    {/* Push footer */}
-
                     <Box sx={{ mt: "auto" }}>
                       <Typography
                         variant="caption"
