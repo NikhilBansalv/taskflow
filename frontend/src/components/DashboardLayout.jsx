@@ -14,7 +14,6 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import FolderRoundedIcon from "@mui/icons-material/FolderRounded";
-import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { useEffect, useState } from "react";
 import api from "../services/api";

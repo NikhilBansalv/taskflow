@@ -49,9 +49,12 @@ public class DashboardService {
                                         LocalDate nextDueDate = taskRepository
                                                         .findNextDueDateByProjectId(project.getId());
 
-                                        long projectPendingTasks = taskRepository.countByProjectAndStatus(project,
+                                        long projectPendingTasks = taskRepository.countByProjectAndStatus(
+                                                        project,
                                                         TaskStatus.TO_DO)
-                                                        + taskRepository.countByProjectAndStatus(project,
+                                                        +
+                                                        taskRepository.countByProjectAndStatus(
+                                                                        project,
                                                                         TaskStatus.IN_PROGRESS);
 
                                         return new ActiveProjectResponse(
@@ -65,7 +68,6 @@ public class DashboardService {
                                                 Comparator.comparing(
                                                                 ActiveProjectResponse::getNextDueDate,
                                                                 Comparator.nullsLast(Comparator.naturalOrder())))
-                                .sorted(Comparator.comparing(ActiveProjectResponse::getNextDueDate))
                                 .limit(3)
                                 .toList();
                 List<UpcomingTaskResponse> upcomingTasks = taskRepository
