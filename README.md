@@ -126,10 +126,10 @@ cd backend/taskmanager
 Configure the following environment variables:
 
 ```properties
-DB_URL=
-DB_USERNAME=
-DB_PASSWORD=
-JWT_SECRET=
+DB_URL = <your_db_url>
+DB_USERNAME = <your_db_username>
+DB_PASSWORD = <your_db_password>
+JWT_SECRET = <your_jwt_secret_key>
 ```
 
 Run:
