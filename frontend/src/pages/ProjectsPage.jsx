@@ -112,9 +112,6 @@ function ProjectsPage() {
       setProjectToDelete(null);
     } catch (error) {
       showSnackbar("Failed to delete project.", "error");
-      console.log(error.response);
-      console.log(error.response?.status);
-      console.log(error.response?.data);
     }
   };
   const filteredProjects = projects.filter(
